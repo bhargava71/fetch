@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fetch Operations</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    table, th, td {
+        border: 1px solid green;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: gray;
+    }
+    form {
+        margin-bottom: 20px;
+    }
+    form input[type="text"], form input[type="number"] {
+        padding: 6px;
+        width: 200px;
+        margin-right: 10px;
+    }
+    form button {
+        padding: 6px 12px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<h2>Fetch Operations</h2>
+
+<!-- Form for adding a new student -->
+<form id="addForm">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="text" id="course" placeholder="Course" required>
+    <input type="hidden" id="studentId"> <!-- Hidden input field for student ID -->
+    <button type="submit">Add Student</button>
+</form>
+
+<!-- Search form -->
+<form>
+    <input type="text" id="searchInput" placeholder="Search by ID or Name">
+    <button type="button" onclick="searchStudents()">Search</button>
+</form>
+
+<!-- Table to display students -->
+<table id="studentTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Course</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<!-- Script to handle CRUD operations -->
+<script>
+    let students = [];
+
+    // Function to fetch data from the API
+    async function fetchStudents() {
+        const response = await fetch('/api/students');
+        const data = await response.json();
+        students = data;
+        renderStudents(students);
+    }
+
+    // Function to render students table
+    function renderStudents(studentsToShow) {
+        let tableBody = document.querySelector("#studentTable tbody");
+        tableBody.innerHTML = "";
+
+        studentsToShow.forEach(student => {
+            let row = `<tr>
+                <td>${student.id}</td>
+                <td>${student.name}</td>
+                <td>${student.course}</td>
+                <td>
+                    <button onclick="editStudent(${student.id})">Edit</button>
+                    <button onclick="deleteStudent(${student.id})">Delete</button>
+                </td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // Function to add a new student
+    function addStudent(event) {
+        event.preventDefault();
+        let name = document.getElementById("name").value;
+        let course = document.getElementById("course").value;
+        let id = document.getElementById("studentId").value;
+        if (id) {
+            // If studentId exists, update the student
+            updateStudentById(id, name, course);
+        } else {
+            // Otherwise, add a new student
+            fetch('/api/students', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, course })
+            })
+            .then(response => response.json())
+            .then(newStudent => {
+                students.push(newStudent);
+                renderStudents(students);
+            });
+        }
+        document.getElementById("addForm").reset(); // Reset form after submission
+        document.getElementById("studentId").value = ""; // Clear hidden input field
+    }
+
+    // Function to edit a student by ID
+    function editStudent(id) {
+        let student = students.find(student => student.id === id);
+        if (student) {
+            // Populate form fields with current student data
+            document.getElementById("name").value = student.name;
+            document.getElementById("course").value = student.course;
+            document.getElementById("studentId").value = id; // Set hidden input field value
+            // Change submit button text to Update
+            document.querySelector("#addForm button[type='submit']").textContent = "Update";
+            // Change form submit behavior to updateStudentById
+            document.getElementById("addForm").onsubmit = updateStudentById;
+        }
+    }
+
+    // Function to update a student by ID
+    function updateStudentById(event) {
+        event.preventDefault();
+        let id = document.getElementById("studentId").value;
+        let name = document.getElementById("name").value;
+        let course = document.getElementById("course").value;
+        fetch(`/api/students/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, course })
+        })
+        .then(response => response.json())
+        .then(updatedStudent => {
+            let index = students.findIndex(student => student.id === updatedStudent.id);
+            if (index !== -1) {
+                students[index] = updatedStudent;
+                renderStudents(students);
+                document.getElementById("addForm").reset(); // Reset form after update
+                document.getElementById("studentId").value = ""; // Clear hidden input field
+                document.querySelector("#addForm button[type='submit']").textContent = "Add Student"; // Reset button text
+                document.getElementById("addForm").onsubmit = addStudent; // Reset form submit behavior
+            }
+        });
+    }
+
+    // Function to delete a student by ID
+    function deleteStudent(id) {
+        fetch(`/api/students/${id}`, {
+            method: 'DELETE'
+        })
+        .then(() => {
+            students = students.filter(student => student.id !== id);
+            renderStudents(students);
+        });
+    }
+
+    // Function to search students by ID or name
+    function searchStudents() {
+        let searchInput = document.getElementById("searchInput").value.toLowerCase();
+        let filteredStudents = students.filter(student =>
+            student.id.toString() === searchInput || student.name.toLowerCase().includes(searchInput)
+        );
+        renderStudents(filteredStudents);
+    }
+
+    // Initial fetching of data
+    fetchStudents();
+
+    // Event listener for form submission
+    document.getElementById("addForm").addEventListener("submit", addStudent);
+</script>
+</body>
+</html>

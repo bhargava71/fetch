@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "name": "Priyanka",
+    "course": "CSE"
+  },
+  {
+    "id": 2,
+    "name": "Radha",
+    "course": "CSE"
+  },
+  {
+    "id": 3,
+    "name": "Bhargavi",
+    "course": "EEE"
+  },
+  {
+    "id": 4,
+    "name": "Indira",
+    "course": "CSE"
+  },
+  {
+    "id": 5,
+    "name": "Pallavi",
+    "course": "CSE AI"
+  },
+  {
+    "id": 6,
+    "name": "Pavithra",
+    "course": "CSE CYBER SECURITY"
+  },
+  {
+    "id": 7,
+    "name": "Gaythri",
+    "course": "CIVIL"
+  },
+  {
+    "id": 8,
+    "name": "Srisatya",
+    "course": "CSE"
+  },
+  {
+    "id": 9,
+    "name": "Pavani",
+    "course": "CSE"
+  },
+  {
+    "id": 10,
+    "name": "Geetha",
+    "course": "MTECH"
+  },
+  {
+    "id": 11,
+    "name": "Rani",
+    "course": "PHD"
+  },
+  {
+    "id": 12,
+    "name": "Vani",
+    "course": "CSE"
+  },
+  {
+    "id": 13,
+    "name": "Jaysri",
+    "course": "EEE"
+  },
+  {
+    "id": 14,
+    "name": "Srivani",
+    "course": "CSE"
+  },
+  {
+    "id": 15,
+    "name": "Veenitha",
+    "course": "CSE AI"
+  },
+  {
+    "id": 16,
+    "name": "Madhunitha",
+    "course": "CSE CYBER SECURITY"
+  },
+  {
+    "id": 17,
+    "name": "Mounisha",
+    "course": "CIVIL"
+  },
+  {
+    "id": 18,
+    "name": "Sarika",
+    "course": "CSE"
+  },
+  {
+    "id": 19,
+    "name": "Anitha",
+    "course": "CSE"
+  },
+  {
+    "id": 20,
+    "name": "Sri Lakshmi",
+    "course": "MCA"
+  }
+]
